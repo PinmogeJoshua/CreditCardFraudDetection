@@ -1,8 +1,8 @@
-from .constants import BASE_PARAMS
-ORIGINAL_PARAMS = {
+# 您notebook 5.1.1节的原始参数（完全未改动）
+BASE_PARAMS = {
     "objective": "binary",
     "metric": "binary_logloss",
-    "boosting_type": "gbdt",
+    "boosting_type": "gbdt", 
     "learning_rate": 0.05,
     "num_leaves": 31,
     "max_depth": 6,
@@ -16,4 +16,3 @@ ORIGINAL_PARAMS = {
     "max_bin": 255,
     "verbosity": -1
 }
-assert BASE_PARAMS == ORIGINAL_PARAMS, "参数被修改！"

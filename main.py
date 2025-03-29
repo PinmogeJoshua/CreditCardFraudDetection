@@ -10,7 +10,8 @@ from src.data.preprocessor import process_time_features, scale_features, plot_di
 from src.utils.visualizer import plot_fraud_time_pattern, plot_correlation
 from src.features.selector import select_features
 from src.features.engineer import add_cyclic_features
-from src.models.trainer import handle_imbalance, train_model
+from src.models.trainer import handle_imbalance, train_lightgbm  
+from src.models.tuner import tune_hyperparameters  
 from src.models.evaluator import evaluate_model
 from src.utils.explainer import shap_analysis
 import pandas as pd
@@ -64,7 +65,7 @@ def main():
     X_test = X_test[selected_features]
     print(f"\n最终选择特征：{selected_features}")
     
-    # 4.4 处理不平衡
+    # 4.4 处理不平衡数据
     class_counts = y_train.value_counts()
     class_ratios = y_train.value_counts(normalize=True)
     print("\n类别计数:\n", class_counts)
@@ -74,24 +75,29 @@ def main():
     
     # ==================== 5. 模型训练与评估 ====================
     print("\n" + "="*20 + " 5. 模型训练与评估 " + "="*20)
+    
+    # 5.3 超参数调优
+    print("\n====== 超参数调优开始 ======")
+    tune_hyperparameters(X_train_resampled, y_train_resampled)
+    
     # 5.1 训练模型
     train_data = lgb.Dataset(X_train_resampled, label=y_train_resampled)
     test_data = lgb.Dataset(X_test, label=y_test)
     
-    model = train_model(X_train_resampled, y_train_resampled, X_test, y_test, class_weight)
+    model = train_lightgbm(X_train_resampled, y_train_resampled, X_test, y_test, class_weight)
     
     # 5.2 模型评估
-    auprc = evaluate_model(model, X_test, y_test)
+    evaluate_model(model, X_test, y_test)
     
     # ==================== 6. 可解释性分析 ====================
     print("\n" + "="*20 + " 6. 可解释性分析 " + "="*20)
     shap_analysis(model, X_test)
-    
     print("\n" + "="*20 + " 流程执行完成 " + "="*20)
 
 if __name__ == "__main__":
-    # 设置matplotlib中文显示
+    # 中文字体设置
     plt.rcParams['font.sans-serif'] = ['SimHei']
     plt.rcParams['axes.unicode_minus'] = False
     
     main()
+    
