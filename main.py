@@ -22,6 +22,8 @@ from src.visualization.advanced_plots import (
 )
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)  # 临时忽略警告
 
 # 设置字体为 SimHei（黑体），支持中文
 rcParams['font.sans-serif'] = ['SimHei']

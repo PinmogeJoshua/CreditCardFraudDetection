@@ -1,20 +1,19 @@
 BASE_PARAMS = {
     'boosting_type': 'gbdt',
     'objective': 'binary',
-    'metric': 'binary_logloss',
+    'metric': ['binary_logloss', 'aucpr'],
     'learning_rate': 0.05,
-    'num_leaves': 7,
-    'max_depth': 4,
+    'num_leaves': 31,
+    'max_depth': 6,
     'min_child_samples': 100,
-    'max_bin': 100,
-    'subsample': 0.9,
-    'subsample_freq': 1,
-    'colsample_bytree': 0.7,
-    'min_child_weight': 0,
-    'min_split_gain': 0,
+    'max_bin': 255,
+    
+    'min_data_in_leaf': 20,  # 对于不平衡数据很重要
+    'seed': 42,
+    
     'lambda_l1': 0.1,
     'lambda_l2': 0.2,
-    'scale_pos_weight': 150,
+    
     'nthread': 8,
     'verbose': -1
 }
