@@ -36,7 +36,10 @@ def train_model(X_train, y_train, X_test, y_test):
         valid_sets=[train_data, test_data],
         valid_names=['train', 'valid'],
         num_boost_round=500,
-        callbacks=[lgb.early_stopping(stopping_rounds=50)], # 使用回调函数实现早停
+        callbacks=[
+            lgb.early_stopping(stopping_rounds=50), # 使用回调函数实现早停
+            lgb.log_evaluation(period=50)   # 使用回调函数实现日志输出
+            ], 
         feval=auprc_metric,
         verbose_eval=50
     )

@@ -20,6 +20,12 @@ from src.visualization.advanced_plots import (
     plot_correlation_heatmap,
     plot_feature_density
 )
+import matplotlib.pyplot as plt
+from matplotlib import rcParams
+
+# 设置字体为 SimHei（黑体），支持中文
+rcParams['font.sans-serif'] = ['SimHei']
+rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 
 def main():
     # 1. 加载数据
