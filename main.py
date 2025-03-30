@@ -1,16 +1,22 @@
 from config import DATA_PATH
-from src.data.loader import load_data
+from src.data.loader import load_data, inspect_data
 from src.data.preprocessing import preprocess_data
 from src.features.engineer import create_time_features, scale_features
 from src.features.selector import select_features
 from src.models.trainer import train_model, save_model
 from src.models.evaluator import evaluate_model
 from src.explainability.shap_analysis import explain_model
-from src.visualization.plots import plot_fraud_hours
+from src.visualization.plots import plot_fraud_hours, plot_class_distribution
 
 def main():
     # 1. 加载数据
     data = load_data(DATA_PATH)
+
+    # 1.1 检查数据集基本信息和缺失值
+    inspect_data(data)
+    
+    # 1.2 可视化目标列的类别分布
+    plot_class_distribution(data, target_column='Class')
 
     # 2. 数据预处理
     data = preprocess_data(data)
