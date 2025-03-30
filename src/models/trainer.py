@@ -36,7 +36,8 @@ def train_model(X_train, y_train, X_test, y_test):
         valid_sets=[train_data, test_data],
         valid_names=['train', 'valid'],
         num_boost_round=500,
-        early_stopping_rounds=50,
+        callbacks=[lgb.early_stopping(stopping_rounds=50)], # 使用回调函数实现早停
+        feval=auprc_metric,
         verbose_eval=50
     )
     return model
