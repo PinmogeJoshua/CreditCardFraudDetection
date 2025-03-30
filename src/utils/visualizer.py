@@ -1,21 +1,6 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def plot_fraud_hours(data):
-    """
-    绘制欺诈交易的小时分布。
-    
-    参数:
-    - data: 包含交易数据的 DataFrame，必须包含 'Class' 和 'Hour' 列。
-    """
-    plt.figure(figsize=(12, 4))
-    fraud_hours = data[data['Class'] == 1]['Hour'].value_counts().sort_index()
-    sns.barplot(x=fraud_hours.index, y=fraud_hours.values, palette='Reds')
-    plt.title('欺诈交易的小时分布')
-    plt.xlabel('Hour of Day')
-    plt.ylabel('Number of Fraudulent Transactions')
-    plt.show()
-
 def plot_precision_recall_curve(precision, recall, auprc):
     """
     绘制 Precision-Recall 曲线。

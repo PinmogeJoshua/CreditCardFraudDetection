@@ -10,6 +10,8 @@ def plot_fraud_hours(data):
     fraud_hours = data[data['Class'] == 1]['Hour'].value_counts().sort_index()
     sns.barplot(x=fraud_hours.index, y=fraud_hours.values, palette='Reds')
     plt.title('欺诈交易的小时分布')
+    plt.xlabel('Hour of Day')
+    plt.ylabel('Number of Fraudulent Transactions')
     plt.show()
     
 def plot_class_distribution(data, target_column='Class'):
