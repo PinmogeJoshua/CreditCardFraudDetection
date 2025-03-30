@@ -1,5 +1,4 @@
-from .constants import BASE_PARAMS
-ORIGINAL_PARAMS = {
+BASE_PARAMS = {
     'boosting_type': 'gbdt',
     'objective': 'binary',
     'metric': 'binary_logloss',
@@ -19,4 +18,3 @@ ORIGINAL_PARAMS = {
     'nthread': 8,
     'verbose': -1
 }
-assert BASE_PARAMS == ORIGINAL_PARAMS, "参数被修改！"
