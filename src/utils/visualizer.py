@@ -1,5 +1,11 @@
 import matplotlib.pyplot as plt
+from matplotlib import rcParams
 import seaborn as sns
+
+# 设置字体为 SimHei（黑体），支持中文
+rcParams['font.sans-serif'] = ['SimHei']
+rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
+
 
 def plot_precision_recall_curve(precision, recall, auprc):
     """

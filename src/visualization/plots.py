@@ -1,8 +1,13 @@
 import matplotlib.pyplot as plt
+from matplotlib import rcParams
 import pandas as pd
 import seaborn as sns
 import plotly.graph_objs as go
 from plotly.offline import iplot
+
+# 设置字体为 SimHei（黑体），支持中文
+rcParams['font.sans-serif'] = ['SimHei']
+rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 
 def plot_fraud_hours(data):
     """绘制欺诈交易的小时分布"""

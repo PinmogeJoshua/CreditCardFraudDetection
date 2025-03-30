@@ -1,5 +1,10 @@
 import matplotlib.pyplot as plt
+from matplotlib import rcParams
 import seaborn as sns
+
+# 设置字体为 SimHei（黑体），支持中文
+rcParams['font.sans-serif'] = ['SimHei']
+rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 
 def plot_transaction_amount(data):
     """
@@ -27,7 +32,8 @@ def plot_correlation_heatmap(data):
     sns.heatmap(correlation_matrix, annot=False, cmap='coolwarm', fmt='.2f')
     plt.title('特征相关性热力图')
     plt.show()
-    
+
+
 def plot_feature_density(data):
     """
     绘制特征密度图，展示每个特征在不同类别（Class = 0 和 Class = 1）下的分布。
@@ -41,10 +47,19 @@ def plot_feature_density(data):
 
     sns.set_style('whitegrid')
     plt.figure()
-    fig, ax = plt.subplots(8, 4, figsize=(16, 28))
+    fig, ax = plt.subplots(8, 5, figsize=(20, 28))  # 调整为 8 行 5 列
 
     for i, feature in enumerate(var):
-        plt.subplot(8, 4, i + 1)
+        # 跳过目标列 'Class'
+        if feature == 'Class':
+            continue
+
+        # 检查方差是否为 0，避免密度估计错误
+        if t0[feature].var() == 0 or t1[feature].var() == 0:
+            print(f"特征 {feature} 在某个类别中的方差为 0，跳过密度估计")
+            continue
+        
+        plt.subplot(8, 5, i + 1)
         sns.kdeplot(t0[feature], bw_adjust=0.5, label="Class = 0")
         sns.kdeplot(t1[feature], bw_adjust=0.5, label="Class = 1")
         plt.xlabel(feature, fontsize=12)
