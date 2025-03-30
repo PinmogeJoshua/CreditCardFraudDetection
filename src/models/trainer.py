@@ -39,42 +39,27 @@ def auprc_metric(y_true, y_pred):
 
 def train_model(X_train, y_train, X_test, y_test):
     """训练模型"""
-    # 计算原始数据的正负样本比例
-    neg_pos_ratio = len(y_train[y_train == 0]) / len(y_train[y_train == 1])
-    print(f"原始数据负/正样本比例: {neg_pos_ratio:.2f}:1")
+    # 动态计算正负样本比例（SMOTE前原始比例）
+    scale_pos_weight = sum(y_train == 0) / sum(y_train == 1)
     
-    # 使用 SMOTE 进行过采样, 解决数据不平衡问题
-    smote = SMOTE(random_state=42)
-    X_train_resampled, y_train_resampled = smote.fit_resample(X_train, y_train)
-    
-    # 计算SMOTE后的正负样本比例
-    smote_neg_pos_ratio = len(y_train_resampled[y_train_resampled == 0]) / len(y_train_resampled[y_train_resampled == 1])
-    print(f"SMOTE后负/正样本比例: {smote_neg_pos_ratio:.2f}:1")
-
-    # 创建 LightGBM 数据集
-    train_data = lgb.Dataset(X_train_resampled, label=y_train_resampled)
-    test_data = lgb.Dataset(X_test, label=y_test)
-
-    # 复制基础参数并调整
+    # 复制并更新参数（移除is_unbalance）
     params = BASE_PARAMS.copy()
+    params.update({
+        'scale_pos_weight': scale_pos_weight,
+        'is_unbalance': False  # 显式禁用
+    })
+    print(f"正负样本比例: 1:{scale_pos_weight:.1f}")
+
+    # 应用SMOTE（仅训练集）
+    smote = SMOTE(random_state=42)
+    X_resampled, y_resampled = smote.fit_resample(X_train, y_train)
     
-    # 移除is_unbalance, 避免冲突
-    if 'is_unbalance' in params:
-        params.pop('is_unbalance')
-    
-    # 训练 LightGBM 模型, 使用自定义 AUPRC 评估函数
-    # 使用 BASE_PARAMS 作为参数
+    # 训练模型（注意eval_set用原始测试集）
     model = lgb.train(
         params,
-        train_data,
-        valid_sets=[train_data, test_data],
-        valid_names=['train', 'valid'],
-        num_boost_round=500,
-        callbacks=[
-            lgb.early_stopping(stopping_rounds=50), # 使用回调函数实现早停
-            lgb.log_evaluation(period=50)   # 使用回调函数实现日志输出
-            ], 
-        feval=auprc_metric
+        train_set=lgb.Dataset(X_resampled, y_resampled),
+        valid_sets=[lgb.Dataset(X_test, y_test)],  # 用原始测试集评估
+        callbacks=[lgb.early_stopping(stopping_rounds=50)]
     )
     return model
 
