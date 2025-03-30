@@ -1,11 +1,19 @@
 from config import DATA_PATH
 from src.data.loader import load_data, inspect_data
+
 from src.data.preprocessing import preprocess_data
+
 from src.features.engineer import create_time_features, scale_features
 from src.features.selector import select_features
+
 from src.models.trainer import train_model, save_model
 from src.models.evaluator import evaluate_model
+
 from src.explainability.shap_analysis import explain_model
+
+from src.utils.visualizer import plot_precision_recall_curve, plot_feature_importance
+from src.utils.explainer import explain_model
+
 from src.visualization.plots import plot_fraud_hours, plot_class_distribution
 from src.visualization.advanced_plots import (
     plot_transaction_amount,
@@ -51,11 +59,25 @@ def main():
     # 6. 模型训练
     model = train_model(X_train, y_train, X_test, y_test)
 
-    # 7. 模型评估
-    evaluate_model(model, X_test, y_test)
+    # 7.1 模型评估
+    # evaluate_model 函数返回 precision, recall 和 auprc
+    precision, recall, auprc = evaluate_model(model, X_test, y_test)
 
-    # 8. 模型解释性分析
+    # 7.2 绘制 Precision-Recall 曲线
+    plot_precision_recall_curve(precision, recall, auprc)
+
+    # 8.1 模型解释性分析
     explain_model(model, X_test, selected_features)
+    
+    # 8.2 绘制特征重要性条形图
+    if hasattr(model, "feature_importances_"):
+        plot_feature_importance(
+            feature_importances=model.feature_importances_,
+            feature_names=selected_features,
+            top_n=10
+        )
+    else:
+        print("模型不支持 feature_importances_ 属性，无法绘制特征重要性图")
 
     # 9. 保存模型
     save_model(model, "models/lightgbm_model.pkl")
