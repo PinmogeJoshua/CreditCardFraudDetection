@@ -7,6 +7,11 @@ from src.models.trainer import train_model, save_model
 from src.models.evaluator import evaluate_model
 from src.explainability.shap_analysis import explain_model
 from src.visualization.plots import plot_fraud_hours, plot_class_distribution
+from src.visualization.advanced_plots import (
+    plot_transaction_amount,
+    plot_correlation_heatmap,
+    plot_feature_density
+)
 
 def main():
     # 1. 加载数据
@@ -17,6 +22,9 @@ def main():
     
     # 1.2 可视化目标列的类别分布
     plot_class_distribution(data, target_column='Class')
+    
+    # 1.3 可视化交易金额分布
+    plot_transaction_amount(data)
 
     # 2. 数据预处理
     data = preprocess_data(data)
@@ -24,10 +32,19 @@ def main():
     # 3. 数据可视化
     plot_fraud_hours(data)
 
-    # 4. 特征工程
+    # 4.1 创建时间特征
     data = create_time_features(data)
-    data = scale_features(data)
 
+    # 4.2 标准化数值特征
+    # 默认标准化 'Amount' 列, 也可以进一步扩展其他列
+    data = scale_features(data, columns_to_scale=['Amount', 'Time_Diff'])
+    
+    # 4.3 特征相关性热力图
+    plot_correlation_heatmap(data)
+
+    # 4.4 特征密度图
+    plot_feature_density(data)
+    
     # 5. 特征选择
     X_train, X_test, y_train, y_test, selected_features = select_features(data)
 
