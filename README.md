@@ -3,6 +3,8 @@
 ## 项目简介
 本项目旨在通过机器学习模型检测信用卡交易中的欺诈行为。数据集来源于公开的信用卡交易数据，包含匿名特征和交易标签（Class 列，1 表示欺诈，0 表示正常交易）。项目实现了从数据加载、预处理、特征工程到模型训练、评估和解释的完整流程
 ## 目录结构
+
+<pre>
 CreditCardFraudDetection/
 │
 ├── main.py                     # 主程序入口
@@ -55,6 +57,7 @@ CreditCardFraudDetection/
     ├── test_data_loader.py     # 测试数据加载模块
     ├── test_feature_engineer.py# 测试特征工程模块
     └── test_model_trainer.py   # 测试模型训练模块
+</pre>
 ## 功能模块
 
 ### 数据处理模块
