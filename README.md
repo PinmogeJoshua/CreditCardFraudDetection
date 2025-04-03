@@ -1,146 +1,125 @@
-# 大数据管理方法与应用个人作业
+# 大数据管理方法与应用个人作业：基于集成学习的信用卡欺诈检测系统
 
-## 项目简介
-本项目旨在通过机器学习模型检测信用卡交易中的欺诈行为。数据集来源于公开的信用卡交易数据，包含匿名特征和交易标签（Class 列，1 表示欺诈，0 表示正常交易）。项目实现了从数据加载、预处理、特征工程到模型训练、评估和解释的完整流程
-## 目录结构
+## 项目概述
 
-<pre>
+本项目旨在构建一个高效的信用卡欺诈检测系统，通过多种机器学习模型和先进的集成学习策略，有效识别信用卡交易中的欺诈行为。系统特别关注严重不平衡数据下的分类问题，提供了一套完整的解决方案，从数据预处理、特征工程到模型训练和评估。
+
+## 主要特点
+
+- **高级特征工程**：创建时间相关特征，捕捉交易时间模式
+- **不平衡数据处理**：结合SMOTE过采样和类别权重调整
+- **多模型集成**：使用Stacking、加权平均等集成学习方法
+- **全面评估体系**：采用AUPRC、F1分数等适合不平衡数据的评估指标
+- **可解释性分析**：提供特征重要性分析，增强模型透明度
+
+## 项目结构
+
+```
 CreditCardFraudDetection/
 │
-├── main.py                     # 主程序入口
-├── config.py                   # 配置文件
-├── requirements.txt            # 项目依赖文件
-├── README.md                   # 项目说明文档
-├── setup.py                    # 项目打包文件（可选）
+├── data/                      # 数据目录
+│   └── creditcard.csv         # 原始数据集
 │
-├── data/                       # 数据文件夹
-│   ├── creditcard.csv          # 原始数据文件
-│   └── processed/              # 处理后的数据文件夹
+├── notebooks/                 # Jupyter笔记本
+│   ├── EDA.ipynb              # 探索性数据分析
+│   ├── preprocessing.ipynb    # 数据预处理和特征工程
+│   ├── feature_selection.ipynb# 特征选择
+│   ├── base_model.ipynb       # 基础模型实现
+│   └── stacking.ipynb         # 集成学习实现
 │
-├── models/                     # 模型文件夹
-│   ├── lightgbm_model.pkl      # 保存的模型文件
-│   └── __init__.py             # 包初始化文件
+├── outputs/                   # 输出目录
+│   ├── datasets/              # 处理后的数据集
+│   ├── features/              # 特征相关数据
+│   ├── models/                # 训练好的模型
+│   └── results/               # 实验结果
 │
-├── logs/                       # 日志文件夹
-│   └── training.log            # 训练日志
+├── src/                       # 源代码
+│   ├── data/                  # 数据处理模块
+│   ├── features/              # 特征工程模块
+│   ├── models/                # 模型实现模块
+│   └── utils/                 # 工具函数
 │
-├── notebooks/                  # Jupyter Notebook 文件夹
-│   └── eda.ipynb               # 数据探索分析
-│   └── experiments.ipynb       # 实验记录
-│
-├── src/                        # 源代码文件夹
-│   ├── data/                   # 数据处理模块
-│   │   ├── loader.py           # 数据加载模块
-│   │   ├── preprocessing.py    # 数据预处理模块
-│   │   └── splitter.py         # 数据集划分模块
-│   │
-│   ├── features/               # 特征工程模块
-│   │   ├── engineer.py         # 特征生成模块
-│   │   └── selector.py         # 特征选择模块
-│   │
-│   ├── models/                 # 模型相关模块
-│   │   ├── trainer.py          # 模型训练模块
-│   │   └── evaluator.py        # 模型评估模块
-│   │
-│   ├── visualization/          # 可视化模块
-│   │   └── plots.py            # 绘图代码
-│   │
-│   ├── explainability/         # 模型解释性分析模块
-│   │   └── shap_analysis.py    # SHAP 分析代码
-│   │
-│   └── utils/                  # 工具函数模块
-│       ├── __init__.py         # 包初始化文件
-│       ├── explainer.py        # 模型解释工具
-│       └── visualizer.py       # 可视化工具
-│
-└── tests/                      # 测试模块
-    ├── test_data_loader.py     # 测试数据加载模块
-    ├── test_feature_engineer.py# 测试特征工程模块
-    └── test_model_trainer.py   # 测试模型训练模块
-</pre>
-## 功能模块
+├── requirements.txt           # 项目依赖
+├── setup.py                   # 安装脚本
+└── README.md                  # 项目说明
+```
 
-### 数据处理模块
-loader.py: 加载数据集。
-preprocessing.py: 数据预处理（如时间特征生成）。
-splitter.py: 数据集划分（训练集和测试集）。
-### 特征工程模块
-engineer.py: 特征生成（如时间特征的正余弦转换）。
-selector.py: 特征选择（基于逻辑回归的 L1 正则化）。
-### 模型模块
-trainer.py: 模型训练（使用 LightGBM 和 SMOTE 处理不平衡数据）。
-evaluator.py: 模型评估（计算 Precision-Recall 曲线和 AUPRC）。
-### 可视化模块
-plots.py: 绘制欺诈交易分布、Precision-Recall 曲线等。
-### 模型解释性分析模块
-shap_analysis.py: 使用 SHAP 分析模型的特征重要性。
-### 工具模块
-explainer.py: 模型解释工具。
-visualizer.py: 通用可视化工具。
-### 测试模块
-test_data_loader.py: 测试数据加载模块。
-test_feature_engineer.py: 测试特征工程模块。
-test_model_trainer.py: 测试模型训练模块。
+## 主要算法
 
-## 安装步骤
-1. 克隆项目到本地：
-git clone https://github.com/your-repo/CreditCardFraudDetection.git
+- **基础模型**
+  - LightGBM
+  - XGBoost
+  - 随机森林
+  
+- **集成方法**
+  - Stacking集成
+  - 加权平均集成
+  - 特征增强型Stacking
+
+## 性能指标
+
+模型在测试集上的主要性能指标:
+
+| 模型 | AUPRC | F1分数 | 召回率 | 精确率 |
+|------|-------|--------|--------|--------|
+| Stacking | 0.8580 | 0.8556 | 0.7857 | 0.9390 |
+
+## 使用指南
+
+### 环境配置
+
+```bash
+# 克隆项目
+git clone https://github.com/yourusername/CreditCardFraudDetection.git
 cd CreditCardFraudDetection
 
-2. 创建虚拟环境并安装依赖
-python -m venv venv
-source venv/bin/activate  # Linux/MacOS
-venv\Scripts\activate     # Windows
+# 创建环境并安装依赖
+conda create -n ccfd python=3.9
+conda activate ccfd
 pip install -r requirements.txt
+```
 
-3. 确保数据文件creditcard.csv位于data文件夹中
+### 运行流程
 
-## 使用方法
-1. 运行主程序
-python main.py
+1. 数据准备与探索
+```bash
+jupyter notebook notebooks/EDA.ipynb
+```
 
-2. 查看日志文件： 日志文件位于 training.log，记录了模型训练和评估的详细信息。
+2. 数据预处理与特征工程
+```bash
+jupyter notebook notebooks/preprocessing.ipynb
+```
 
-3. 查看模型文件： 训练完成后，模型会保存到 models/lightgbm_model.pkl。
+3. 模型训练与评估
+```bash
+jupyter notebook notebooks/base_model.ipynb
+jupyter notebook notebooks/stacking.ipynb
+```
 
-## 测试
-运行以下命令执行单元测试：
-python -m unittest discover tests
+## 数据来源
 
-## 项目依赖
-项目依赖的主要 Python 包包括：
+本项目使用的信用卡交易数据集包含284,807条交易记录，其中欺诈交易占比约0.17%。由于数据隐私原因，大部分特征已通过PCA转换为匿名特征(V1-V28)。
 
-pandas
-numpy
-scikit-learn
-lightgbm
-matplotlib
-seaborn
-shap
-imbalanced-learn
-完整依赖请参考 requirements.txt 文件。
+## 贡献指南
 
-## 数据集说明
-数据集文件：data/creditcard.csv
-数据集包含匿名特征 V1 到 V28，以及交易金额 Amount 和时间 Time。
-标签列 Class：1 表示欺诈交易，0 表示正常交易。
+欢迎通过以下方式为项目做出贡献:
+1. 提交Issue报告bug或提出新功能
+2. 提交Pull Request改进代码
+3. 优化模型性能或添加新的算法
 
-## 主要功能
-1. 数据加载与预处理：
-    加载数据集并生成时间特征
-    使用 SMOTE 处理数据不平衡问题
-2. 特征工程：
-    生成时间特征的正余弦转换
-    使用逻辑回归的 L1 正则化进行特征选择
-3. 模型训练与评估：
-    使用 LightGBM 训练模型
-    评估模型的 Precision-Recall 曲线和 AUPRC
-4. 可视化与解释：
-    绘制欺诈交易分布图
-    使用 SHAP 分析模型的特征重要性
+## 参考文献
 
-## 贡献
-如果你对本项目有任何建议或改进，欢迎提交 Issue 或 Pull Request！
+- Breiman, L. (2001). Random forests. Machine learning, 45(1), 5-32.
+- Chen, T., & Guestrin, C. (2016). XGBoost: A scalable tree boosting system. In KDD.
+- Ke, G., et al. (2017). LightGBM: A highly efficient gradient boosting decision tree. In NIPS.
+- Chawla, N. V., et al. (2002). SMOTE: synthetic minority over-sampling technique. JAIR.
+- Wolpert, D. H. (1992). Stacked generalization. Neural networks, 5(2), 241-259.
 
 ## 许可证
-本项目遵循 MIT License。
+
+MIT
+
+## 联系方式
+
+若有任何问题，请联系 stellewang0417@qq.com
